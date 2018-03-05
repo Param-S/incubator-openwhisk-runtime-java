@@ -29,8 +29,8 @@ ext {
     dockerRetries = project.hasProperty('dockerRetries') ? dockerRetries.toInteger() : 3
     dockerBinary = project.hasProperty('dockerBinary') ? [dockerBinary] : ['docker']
     dockerBuildArg = ['build']
+    dockerFile = project.hasProperty('dockerFile') ? dockerFile : 'Dockerfile'
 }
-ext.dockerTaggedImageName = dockerRegistry + dockerImagePrefix + '/' + dockerImageName + ':' + dockerImageTag
 
 if(project.hasProperty('dockerHost')) {
     dockerBinary += ['--host', project.dockerHost]
@@ -45,13 +45,15 @@ if(project.hasProperty('dockerBuildArgs')) {
 task distDocker {
     doLast {
         def start = new Date()
-        def cmd = dockerBinary + dockerBuildArg + ['-t', dockerImageName, project.buildscript.sourceFile.getParentFile().getAbsolutePath()]
+	def cmd = null
+	cmd = dockerBinary + dockerBuildArg + ['-t', dockerImageName, '-f', project.buildscript.sourceFile.getParentFile().getAbsolutePath() + '/' + dockerFile, project.buildscript.sourceFile.getParentFile().getAbsolutePath()]
         retry(cmd, dockerRetries, dockerTimeout)
         println("Building '${dockerImageName}' took ${TimeCategory.minus(new Date(), start)}")
     }
 }
 task tagImage {
     doLast {
+	def dockerTaggedImageName = dockerRegistry + dockerImagePrefix + '/' + dockerImageName + ':' + dockerImageTag
         def versionString = (dockerBinary + ['-v']).execute().text
         def matched = (versionString =~ /(\d+)\.(\d+)\.(\d+)/)
 
@@ -68,6 +70,7 @@ task tagImage {
 
 task pushImage {
     doLast {
+	def dockerTaggedImageName = dockerRegistry + dockerImagePrefix + '/' + dockerImageName + ':' + dockerImageTag
         def cmd = dockerBinary + ['push', dockerTaggedImageName]
         retry(cmd, dockerRetries, dockerTimeout)
     }
