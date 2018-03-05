@@ -1,2 +1,11 @@
 ext.dockerImageName = 'java8action'
 apply from: '../../gradle/docker.gradle'
+
+task buildOpenJ9 {
+	doLast {
+		project.dockerFile = 'Dockerfile.OpenJ9'
+		project.dockerImageTag = 'openj9'
+	}
+
+}
+buildOpenJ9.finalizedBy distDocker
