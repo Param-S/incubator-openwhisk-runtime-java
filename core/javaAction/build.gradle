@@ -1,10 +1,11 @@
 ext.dockerImageName = 'java8action'
+ext.dockerImageTag = 'xshare'
 apply from: '../../gradle/docker.gradle'
 
 task buildOpenJ9 {
 	doLast {
 		project.dockerFile = 'Dockerfile.OpenJ9'
-		project.dockerImageTag = 'openj9'
+		project.dockerImageTag = 'openj9xsharexquick'
 	}
 
 }

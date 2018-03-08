@@ -28,6 +28,10 @@ import java.net.InetSocketAddress;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.util.HashMap;
+import java.time.ZoneId;
+import java.time.LocalTime;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -51,6 +55,23 @@ public class Proxy {
 
     public void start() {
         server.start();
+
+	/* Patch to measure the JVM init time with HTTP Server start(upto this statement) */
+	try {
+		LocalTime endTime = LocalTime.now(ZoneId.of("UTC"));
+
+		/* calculate the time difference by substracting start time passed as property through command-line from end time */
+		SimpleDateFormat df = new SimpleDateFormat("HH:mm:ss.SSS");	
+		Date stime = df.parse((System.getProperty("StartTime")).substring(0,12));
+		Date etime = df.parse(endTime.toString());
+		long diff = etime.getTime() - stime.getTime();
+
+		/* Write the time difference on the console */
+		System.out.println(diff);
+	} catch (Exception e) {
+		System.out.println("Exception in startup measurement path: " + e);
+	}
+	/* Patch Ends here */
     }
 
     private static void writeResponse(HttpExchange t, int code, String content) throws IOException {

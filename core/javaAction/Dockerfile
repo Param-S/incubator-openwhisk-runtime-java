@@ -37,4 +37,5 @@ RUN rm -rf /javaAction/src
 
 RUN java -Xshare:dump
 
-CMD ["java", "-Xshare:on", "-jar", "/javaAction/build/libs/javaAction-all.jar"]
+CMD ["/bin/bash", "/javaAction/runHotspot.sh"]
+# CMD ["java", "-Xshare:on", "-jar", "/javaAction/build/libs/javaAction-all.jar"]

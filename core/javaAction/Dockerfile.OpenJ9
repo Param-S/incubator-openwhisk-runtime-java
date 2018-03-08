@@ -1,10 +1,11 @@
 FROM adoptopenjdk/openjdk8-openj9:x86_64-ubuntu-jdk8u152-b16
 
-RUN java "-Xshareclasses:cacheDir=/javaSharedCache/" -version
+# RUN java "-Xshareclasses:cacheDir=/javaSharedCache/" -version
 
 ADD proxy /javaAction
 RUN rm -rf /javaAction/.classpath /javaAction/.gitignore /javaAction/.gradle /javaAction/.project /javaAction/.settings /javaAction/Dockerfile /javaAction/build
 RUN cd /javaAction; ./gradlew oneJar
 RUN rm -rf /javaAction/src
 
-CMD ["java", "-Xshareclasses:cacheDir=/javaSharedCache,readonly", "-jar", "/javaAction/build/libs/javaAction-all.jar"]
+CMD ["/bin/bash", "/javaAction/runOpenJ9.sh"]
+#CMD ["java", "-Xshareclasses:cacheDir=/javaSharedCache,readonly", "-jar", "/javaAction/build/libs/javaAction-all.jar"]
