@@ -28,6 +28,8 @@ import java.net.InetSocketAddress;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.util.HashMap;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -51,6 +53,9 @@ public class Proxy {
 
     public void start() {
         server.start();
+                         ZoneId zoneId = ZoneId.of("UTC");
+                 ZonedDateTime ctime = ZonedDateTime.now(zoneId);
+                 System.out.println(ctime.toString());
     }
 
     private static void writeResponse(HttpExchange t, int code, String content) throws IOException {
